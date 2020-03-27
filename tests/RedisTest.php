@@ -5,7 +5,7 @@ require_once(dirname($_SERVER['PHP_SELF'])."/TestSuite.php");
 class Redis_Test extends TestSuite
 {
     const PORT = 6379;
-    const AUTH = NULL; //replace with a string to use Redis authentication
+    const AUTH = 'phpredis'; //replace with a string to use Redis authentication
 
     /* City lat/long */
     protected $cities = [
@@ -5943,7 +5943,9 @@ class Redis_Test extends TestSuite
                 } else {
                     @$obj_r->connect($arr_args[0]);
                 }
-
+                if (self::AUTH) {
+                    $this->assertTrue($obj_r->auth(self::AUTH));
+                }
                 $this->assertTrue($obj_r->ping());
             }
         } catch (Exception $ex) {
@@ -5970,6 +5972,9 @@ class Redis_Test extends TestSuite
             $obj_r = new Redis();
             try {
                 @$obj_r->connect('localhost', $port);
+                if (self::AUTH) {
+                    $this->assertTrue($obj_r->auth(self::AUTH));
+                }
                 $this->assertTrue($obj_r->ping());
             } catch(Exception $ex) {
                 $this->assertTrue(false);
